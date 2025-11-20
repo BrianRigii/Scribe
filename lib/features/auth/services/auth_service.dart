@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'package:appwrite/models.dart' hide User;
 import 'package:flutter/material.dart';
 import 'package:scribe/core/appwrite_service.dart';
+import 'package:scribe/core/database_service.dart';
 import 'package:scribe/core/uuid.dart';
 import 'package:scribe/features/auth/models/user.dart';
 
@@ -8,30 +10,26 @@ enum AuthStatus { unauthenticated, authenticated, loading }
 
 class AuthService extends ChangeNotifier {
   final AppWriteService client;
+  final DatabaseService database;
 
   AuthStatus status = AuthStatus.unauthenticated;
-  User? currentUser;
+  User? get currentUser =>
+      database.userBox.isNotEmpty ? database.userBox.getAt(0) : null;
 
-  AuthService({required this.client});
+  AuthService({required this.client, required this.database});
 
   // -----------------------------
   // CHECK INITIAL AUTH STATE
   // -----------------------------
   Future<void> checkAuthState() async {
     try {
-      await fetchCurrentUser();
-
       if (currentUser != null) {
         status = AuthStatus.authenticated;
       } else {
         status = AuthStatus.unauthenticated;
       }
-      notifyListeners();
     } catch (e) {
       status = AuthStatus.unauthenticated;
-      currentUser = null;
-      notifyListeners();
-      log("CheckAuthState Error: $e");
     }
   }
 
@@ -67,12 +65,17 @@ class AuthService extends ChangeNotifier {
       status = AuthStatus.loading;
       notifyListeners();
 
-      await client.account.createEmailPasswordSession(
+      Session session = await client.account.createEmailPasswordSession(
         email: email,
         password: password,
       );
 
-      await fetchCurrentUser();
+      final user = await client.account.get();
+
+      await database.userBox.clear(); // Clear previous user data
+      await database.userBox.add(
+        User.fromJson(user.toMap()),
+      ); // Store current user
 
       status = AuthStatus.authenticated;
       notifyListeners();
@@ -87,15 +90,15 @@ class AuthService extends ChangeNotifier {
   // -----------------------------
   // FETCH CURRENT USER
   // -----------------------------
-  Future<void> fetchCurrentUser() async {
-    try {
-      final raw = await client.account.get();
-      currentUser = User.fromJson(raw.toMap());
-    } catch (e) {
-      log("FetchCurrentUser Error: $e");
-      currentUser = null;
-    }
-  }
+  // Future<void> fetchCurrentUser() async {
+  //   try {
+  //     final raw = await client.account.get();
+  //     currentUser = User.fromJson(raw.toMap());
+  //   } catch (e) {
+  //     log("FetchCurrentUser Error: $e");
+  //     currentUser = null;
+  //   }
+  // }
 
   // -----------------------------
   // LOGOUT
@@ -107,7 +110,7 @@ class AuthService extends ChangeNotifier {
 
       await client.account.deleteSession(sessionId: 'current');
 
-      currentUser = null;
+      await database.userBox.clear();
       status = AuthStatus.unauthenticated;
 
       notifyListeners();

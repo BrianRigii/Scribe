@@ -1,36 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scribe/core/appwrite_service.dart';
+import 'package:scribe/core/database_service.dart';
 import 'package:scribe/core/file_picker.dart';
 import 'package:scribe/core/router.dart';
 import 'package:scribe/core/theme.dart';
 import 'package:scribe/features/auth/services/auth_service.dart';
 import 'package:scribe/features/books/books_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final appWrite = AppWriteService();
-
-  runApp(Scribe(appWriteService: appWrite));
+  await DatabaseService.instance.init();
+  runApp(Scribe());
 }
 
 class Scribe extends StatelessWidget {
-  final AppWriteService appWriteService;
-  const Scribe({super.key, required this.appWriteService});
+  const Scribe({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AppWriteService>.value(value: appWriteService),
         ChangeNotifierProvider<AuthService>(
-          create: (_) => AuthService(client: appWriteService),
+          create: (_) => AuthService(
+            client: AppWriteService.instance,
+            database: DatabaseService.instance,
+          ),
         ),
+
         Provider<ScribeFilePicker>(create: (_) => FilePickerImpl()),
         ChangeNotifierProvider<BookService>(
           create: (context) => BookServiceImpl(
-            client: appWriteService,
+            client: AppWriteService.instance,
             filePicker: Provider.of<ScribeFilePicker>(context, listen: false),
           ),
         ),

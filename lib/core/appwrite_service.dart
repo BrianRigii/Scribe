@@ -2,8 +2,8 @@ import 'package:appwrite/appwrite.dart';
 import 'package:scribe/core/config.dart';
 
 class AppWriteService {
-  static final AppWriteService _instance = AppWriteService._internal();
-  factory AppWriteService() => _instance;
+  static final AppWriteService instance = AppWriteService._internal();
+  factory AppWriteService() => instance;
 
   late final Account account;
   late final Databases databases;
