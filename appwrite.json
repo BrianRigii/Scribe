@@ -6,7 +6,7 @@
       "name": "process-book",
       "path": "functions/process-book",
       "runtime": "dart-3.3",
-      "entrypoint": "lib/main.dart",
+      "entrypoint": "main.dart",
       "execute": ["any"],
       "events": [
         "buckets.*.files.*.create"
