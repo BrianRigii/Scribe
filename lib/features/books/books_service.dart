@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
@@ -34,14 +35,35 @@ class BookServiceImpl extends BookService {
       if (files.isEmpty) {
         throw Exception("No file selected");
       }
-      client.storage.createFile(
+
+      final selectedFile = files[0];
+
+      // Validate file exists and has content
+      if (!await selectedFile.exists()) {
+        throw Exception("Selected file does not exist");
+      }
+
+      final fileBytes = await selectedFile.readAsBytes();
+      if (fileBytes.isEmpty) {
+        throw Exception("Selected file is empty");
+      }
+
+      log(
+        "Uploading file: ${selectedFile.path}, size: ${fileBytes.length} bytes",
+      );
+
+      await client.storage.createFile(
         bucketId: Config.booksBucketId,
         fileId: generateUuid(),
-        file: InputFile.fromPath(path: files[0].path),
+        file: InputFile.fromBytes(
+          bytes: fileBytes,
+          filename: selectedFile.path.split('/').last,
+        ),
         onProgress: _setUploadProgress,
       );
-      return files[0];
+      return selectedFile;
     } catch (e) {
+      log("Error picking or uploading book file: $e");
       rethrow;
     }
   }

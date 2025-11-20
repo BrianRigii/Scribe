@@ -1,0 +1,10 @@
+name: process_book
+description: Appwrite Cloud Function to process uploaded books
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  dart_appwrite: ^12.0.0
+  http: ^1.1.0

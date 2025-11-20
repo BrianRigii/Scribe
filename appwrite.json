@@ -1,0 +1,22 @@
+{
+  "projectId": "",
+  "projectName": "Scribe",
+  "functions": [
+    {
+      "name": "process-book",
+      "path": "functions/process-book",
+      "runtime": "dart-3.3",
+      "entrypoint": "lib/main.dart",
+      "execute": ["any"],
+      "events": [
+        "buckets.*.files.*.create"
+      ],
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "variables": {
+        "PROCESSING_API_URL": ""
+      }
+    }
+  ]
+}
