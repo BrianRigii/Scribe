@@ -63,7 +63,6 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _handleTryAlice() {
-    // TODO: Implement Alice in Wonderland demo
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Alice in Wonderland demo coming soon!'),

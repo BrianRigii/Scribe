@@ -53,15 +53,19 @@ class BookServiceImpl extends BookService {
         "Uploading file: ${selectedFile.path}, size: ${fileBytes.length} bytes",
       );
 
+      String fileId = generateUuid();
+
       await client.storage.createFile(
         bucketId: Config.booksBucketId,
-        fileId: generateUuid(),
+        fileId: fileId,
         file: InputFile.fromBytes(
           bytes: fileBytes,
           filename: selectedFile.path.split('/').last,
         ),
         onProgress: _setUploadProgress,
       );
+
+      await triggerProcessBookFunction(fileId);
       return selectedFile;
     } catch (e) {
       log("Error picking or uploading book file: $e");
@@ -71,6 +75,7 @@ class BookServiceImpl extends BookService {
 
   Future triggerProcessBookFunction(String fileId) async {
     try {
+      log('Triggering process book function for fileId: $fileId');
       final functions = Functions(client.client);
       final response = await functions.createExecution(
         functionId: Config.processBookFunctionId,
