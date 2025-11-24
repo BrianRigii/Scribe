@@ -13,6 +13,7 @@ Future<dynamic> main(final context) async {
       .setKey(Platform.environment['APPWRITE_FUNCTION_API_KEY']);
 
   try {
+    context.log('Function execution started');
     Map<String, dynamic> body = jsonDecode(context.req.body);
     String fileId = body['fileId'];
     Storage storage = Storage(client);
