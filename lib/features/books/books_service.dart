@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -64,6 +65,19 @@ class BookServiceImpl extends BookService {
       return selectedFile;
     } catch (e) {
       log("Error picking or uploading book file: $e");
+      rethrow;
+    }
+  }
+
+  Future triggerProcessBookFunction(String fileId) async {
+    try {
+      final functions = Functions(client.client);
+      final response = await functions.createExecution(
+        functionId: Config.processBookFunctionId,
+        body: jsonEncode({'fileId': fileId}),
+      );
+      log("Triggered process book function: ${response.toMap()}");
+    } catch (error) {
       rethrow;
     }
   }

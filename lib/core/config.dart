@@ -11,4 +11,8 @@ class Config {
   // Add other configuration constants here as needed
 
   static const String booksBucketId = String.fromEnvironment('BOOKS_BUCKET_ID');
+
+  static const String processBookFunctionId = String.fromEnvironment(
+    'PROCESS_BOOK_FUNCTION_ID',
+  );
 }
