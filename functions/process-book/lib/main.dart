@@ -5,8 +5,15 @@ import 'package:dart_appwrite/dart_appwrite.dart';
 
 // This Appwrite function will be executed every time your function is triggered
 Future<dynamic> main(final context) async {
-  // You can use the Appwrite SDK to interact with other services
-  // For this example, we're using the Users service
+  final endpoint = Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'];
+  final project = Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'];
+  final apiKey = Platform.environment['APPWRITE_API_KEY'];
+  final bucketId = Platform.environment['BOOKS_BUCKET_ID'];
+
+  context.log("endpoint=$endpoint");
+  context.log("project=$project");
+  context.log("apiKeyExists=${apiKey != null}");
+  context.log("bucketId=$bucketId");
   final client = Client()
       .setEndpoint(Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'] ?? '')
       .setProject(Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'] ?? '')
