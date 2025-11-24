@@ -83,6 +83,7 @@ class BookServiceImpl extends BookService {
       );
       log("Triggered process book function: ${response.toMap()}");
     } catch (error) {
+      log('Error triggering process book function: $error');
       rethrow;
     }
   }
