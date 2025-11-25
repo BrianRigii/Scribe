@@ -28,20 +28,16 @@ Future<dynamic> main(final context) async {
     context.log('Processing file: ${file.name} with ID: ${file.$id}');
 
     // Return proper RuntimeResponse
-    return context.res
-      ..statusCode = 200
-      ..json({
-        'success': true,
-        'message': 'Book processing started for file ID: $fileId',
-      });
+    return context.res.json({
+      'success': true,
+      'message': 'Book processing started for file ID: $fileId',
+    }, 200);
   } catch (e, st) {
     context.error('Error processing book: $e\n$st');
 
-    return context.res
-      ..statusCode = 500
-      ..json({
-        'success': false,
-        'error': e.toString(),
-      });
+    return context.res.json({
+      'success': false,
+      'error': e.toString(),
+    }, 500);
   }
 }
