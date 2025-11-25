@@ -6,15 +6,6 @@ import 'package:dart_appwrite/dart_appwrite.dart';
 // This Appwrite function will be executed every time your function is triggered
 Future<dynamic> main(final context) async {
   context.log('Function execution started');
-  final endpoint = Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'];
-  final project = Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'];
-  final apiKey = Platform.environment['APPWRITE_FUNCTION_API_KEY'];
-  final bucketId = Platform.environment['BOOKS_BUCKET_ID'];
-
-  context.log("endpoint=$endpoint");
-  context.log("project=$project");
-  context.log("apiKeyExists=${apiKey != null}");
-  context.log("bucketId=$bucketId");
 
   final client = Client()
       .setEndpoint(Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'] ?? '')
@@ -23,7 +14,8 @@ Future<dynamic> main(final context) async {
 
   try {
     context.log('Function execution started');
-    Map<String, dynamic> body = jsonDecode(context.req.body);
+    var body = jsonDecode(context.req.body);
+    context.log('Request body: $body');
     String fileId = body['fileId'];
     Storage storage = Storage(client);
     final file = await storage.getFile(
