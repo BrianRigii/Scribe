@@ -8,7 +8,7 @@ Future<dynamic> main(final context) async {
   context.log('Function execution started');
   final endpoint = Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'];
   final project = Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'];
-  final apiKey = Platform.environment['APPWRITE_API_KEY'];
+  final apiKey = Platform.environment['APPWRITE_FUNCTION_API_KEY'];
   final bucketId = Platform.environment['BOOKS_BUCKET_ID'];
 
   context.log("endpoint=$endpoint");
