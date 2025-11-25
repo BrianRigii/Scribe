@@ -5,6 +5,7 @@ import 'package:dart_appwrite/dart_appwrite.dart';
 
 // This Appwrite function will be executed every time your function is triggered
 Future<dynamic> main(final context) async {
+  context.log('Function execution started');
   final endpoint = Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'];
   final project = Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'];
   final apiKey = Platform.environment['APPWRITE_API_KEY'];
@@ -14,6 +15,7 @@ Future<dynamic> main(final context) async {
   context.log("project=$project");
   context.log("apiKeyExists=${apiKey != null}");
   context.log("bucketId=$bucketId");
+
   final client = Client()
       .setEndpoint(Platform.environment['APPWRITE_FUNCTION_API_ENDPOINT'] ?? '')
       .setProject(Platform.environment['APPWRITE_FUNCTION_PROJECT_ID'] ?? '')
